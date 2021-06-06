@@ -10,9 +10,9 @@ const dailySichaRouter = require('./routes/dailySichaRoutes');
 const topicRouter = require('./routes/topicRoutes');
 const authRouter = require('./routes/authRoutes');
 
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
 app.use(morgan('tiny'));
 app.use('/public', express.static('public'));
 app.use('/daily-sicha', dailySichaRouter);
