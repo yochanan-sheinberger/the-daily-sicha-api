@@ -8,7 +8,8 @@ const path = require('path');
 const Admin = require('../schemas/Admin');
 
 const authRouter = express.Router();
-const RSA_PRIVATE_KEY = fs.readFileSync(path.resolve(__dirname, '../../jwtRS256.key'), () => { });
+const RSA_PRIVATE_KEY = fs.readFileSync(path.resolve(__dirname, '../jwtRS256.key'), () => { });
+console.log(RSA_PRIVATE_KEY);
 // const RSA_PRIVATE_KEY = fs.readFileSync(`${process.env.PWD}../../jwtRS256.key`, () => { });
 async function generateJWT(name) {
   const user = await Admin.findOne({ name });
