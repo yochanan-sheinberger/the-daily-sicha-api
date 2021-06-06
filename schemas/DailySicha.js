@@ -4,7 +4,9 @@ const dailySicha = mongoose.Schema({
   date: String,
   abstract: String,
   content: String,
+  contentText: String,
   contentHeb: String,
+  contentHebText: String,
   recUrl: String,
   dedication: String,
 });

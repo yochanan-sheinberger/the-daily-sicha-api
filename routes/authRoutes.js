@@ -8,8 +8,8 @@ const path = require('path');
 const Admin = require('../schemas/Admin');
 
 const authRouter = express.Router();
-const RSA_PRIVATE_KEY = fs.readFileSync(path.resolve(__dirname, '../../jwtRS256.key'), () => { });
-
+// const RSA_PRIVATE_KEY = fs.readFileSync(path.resolve(__dirname, '../../jwtRS256.key'), () => { });
+const RSA_PRIVATE_KEY = fs.readFileSync(`${process.env.PWD}../../jwtRS256.key`, () => { });
 async function generateJWT(name) {
   const user = await Admin.findOne({ name });
 
@@ -22,7 +22,7 @@ async function generateJWT(name) {
   return jwtBearerToken;
 }
 
-authRouter.post('/add-user', async (req, res) => {
+authRouter.post('/add-admin', async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   if (await Admin.findOne({ name: req.body.name })) {
     res.status(400).json('כתובת דוא"ל זו כבר קיימת במערכת');
