@@ -57,4 +57,9 @@ dailySichaRouter.post('/search-sicha', async (req, res) => {
   res.json({sichos, count});
 })
 
+dailySichaRouter.get('/get-base-url', (req, res) => {
+  const url = `${req.protocol}://${req.get('host')}`;
+  res.json(url);
+})
+
 module.exports = dailySichaRouter;
