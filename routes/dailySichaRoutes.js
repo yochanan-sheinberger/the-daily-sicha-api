@@ -1,30 +1,15 @@
 const express = require('express');
-const multer = require('multer')
+const moment = require('moment');
+
+const isAuthenticated = require('../helpers/jwtAuth');
+const upload = require('../helpers/multer');
+const isSecondHoliday = require('../helpers/hebcal');
+
 const DailySicha = require('../schemas/DailySicha');
 
 const dailySichaRouter = express.Router();
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === 'cont') {
-      cb(null, 'public/pdf/')
-    } else if (file.fieldname === 'contHeb') {
-      cb(null, 'public/pdfHeb/')
-    } else if (file.fieldname === 'recs') {
-      cb(null, 'public/records/')
-    }
-  },
-  filename: function (req, file, cb) {
-    console.log(file);
-    cb(null, file.originalname)
-  }
-})
-
-const upload = multer({ storage });
-
-dailySichaRouter.post('/add-daily-sichos', upload.any(), async (req, res) => {
-  console.log(req.files);
-  // const sichos = await DailySicha.insertMany(JSON.parse(req.body.docs));
+dailySichaRouter.post('/add-daily-sichos', isAuthenticated, upload.any(), async (req, res) => {
   const bulkData = JSON.parse(req.body.docs).map(sicha => (
     {
       updateOne: {
@@ -39,21 +24,30 @@ dailySichaRouter.post('/add-daily-sichos', upload.any(), async (req, res) => {
 })
 
 dailySichaRouter.get('/get-Daily-sicha', async (req, res) => {
-  console.log(req.query.date);
-  const sicha = await DailySicha.find({date: req.query.date});
-  console.log(sicha);
+  let sicha = await DailySicha.findOne({date: req.query.date}, '-contentText -contentHebText');
+  if (!sicha) {
+    let date = moment(req.query.date, 'DD-MM-YYYY').subtract(1, 'days').format('DD-MM-YYYY');
+    sicha = await DailySicha.findOne({date: date}, '-contentText -contentHebText');
+    if (!sicha) {
+      let operator = 'add';
+      if (isSecondHoliday(moment(req.query.date, 'DD-MM-YYYY'))) {
+        operator = 'subtract';
+      }
+      for (let i = 0; i < 5 && !sicha; i++) {
+        date = moment(date, 'DD-MM-YYYY')[operator](1, 'days').format('DD-MM-YYYY');
+        sicha = await DailySicha.findOne({date: date}, '-contentText -contentHebText');
+      }
+    }
+  }
   res.json(sicha);
 })
 
 dailySichaRouter.post('/search-sicha', async (req, res) => {
-  console.log(req.body);
   const terms = req.body.fields.map(term => {
     return { [term]: { $regex: new RegExp(req.body.value) } }
   })
-  console.log(terms);
   const count = await DailySicha.find({ $or: terms }).count();
-  const sichos = await DailySicha.find({ $or: terms }).limit(3).skip(req.body.page * 3);
-  // console.log(sichos);
+  const sichos = await DailySicha.find({ $or: terms }, 'date abstract').limit(12).skip(req.body.page * 12);
   res.json({sichos, count});
 })
 

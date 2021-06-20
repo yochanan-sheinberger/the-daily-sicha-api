@@ -1,15 +1,15 @@
 const passport = require('passport');
 const { Strategy } = require('passport-local');
 const bcrypt = require('bcrypt');
-const { Admin } = require('../../schemas/Admin');
+const Admin = require('../../schemas/Admin');
 
 function localStrategy() {
   passport.use(new Strategy({
-    usernameField: 'name',
-  }, (name, password, done) => {
+    usernameField: 'email',
+  }, (email, password, done) => {
     (async () => {
       try {
-        const admin = await Admin.findOne({ name });
+        const admin = await Admin.findOne({ email });
         if (admin && await bcrypt.compare(password, admin.password)) {
           done(null, admin);
         } else {

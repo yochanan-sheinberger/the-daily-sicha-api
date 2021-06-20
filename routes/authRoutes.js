@@ -4,15 +4,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
+const isAuthenticated = require('../helpers/jwtAuth');
 
 const Admin = require('../schemas/Admin');
 
 const authRouter = express.Router();
 const RSA_PRIVATE_KEY = fs.readFileSync(path.resolve(__dirname, '../jwtRS256.key'), () => { });
-console.log(RSA_PRIVATE_KEY);
 // const RSA_PRIVATE_KEY = fs.readFileSync(`${process.env.PWD}../../jwtRS256.key`, () => { });
-async function generateJWT(name) {
-  const user = await Admin.findOne({ name });
+async function generateJWT(email) {
+  const user = await Admin.findOne({ email });
 
   const jwtBearerToken = await jwt.sign({}, RSA_PRIVATE_KEY, {
     algorithm: 'RS256',
@@ -23,13 +23,13 @@ async function generateJWT(name) {
   return jwtBearerToken;
 }
 
-authRouter.post('/add-admin', async (req, res) => {
+authRouter.post('/add-admin', isAuthenticated, async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  if (await Admin.findOne({ name: req.body.name })) {
+  if (await Admin.findOne({ email: req.body.email })) {
     res.status(400).json('כתובת דוא"ל זו כבר קיימת במערכת');
   }
   const admin = {
-    name: req.body.name,
+    email: req.body.email,
     password: hashedPassword,
   };
 
@@ -50,9 +50,8 @@ authRouter.post('/authenticate', async (req, res, next) => {
 
     if (!admin) return res.status(401).json('name or password not valid');
 
-    const jwtBearerToken = await generateJWT(req.body.name);
+    const jwtBearerToken = await generateJWT(req.body.email);
     return res.status(200).json({
-      name: admin.name,
       idToken: jwtBearerToken,
       expiresIn: 30,
     });
