@@ -1,14 +1,9 @@
 const mongoose = require('mongoose');
 
 const dailySicha = mongoose.Schema({
+  id: Number,
   date: String,
-  title:String,
-  abstract: String,
-  content: String,
-  contentText: String,
-  contentHeb: String,
-  contentHebText: String,
-  recUrl: String,
+  title: String,
   dedication: String,
 });
 
