@@ -74,6 +74,8 @@ dailySichaRouter.get('/get-Daily-sicha', async (req, res) => {
       }
     }
   }
+  console.log(date);
+  console.log(day);
   const sicha = await Sichos.findOne({ id: day.id}, 'abstract content contentHeb recUrl');
   console.log(sicha);
   res.json({sicha, day});
