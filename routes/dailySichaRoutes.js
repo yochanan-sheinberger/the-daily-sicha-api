@@ -68,7 +68,7 @@ dailySichaRouter.get('/get-Daily-sicha', async (req, res) => {
       if (isSecondHoliday(moment(req.query.date, 'DD-MM-YYYY'))) {
         operator = 'subtract';
       }
-      for (let i = 0; i < 5 && !sicha; i++) {
+      for (let i = 0; i < 5 && !day; i++) {
         date = moment(date, 'DD-MM-YYYY')[operator](1, 'days').format('DD-MM-YYYY');
         day = await DailySicha.findOne({ date: date });
       }
