@@ -12,7 +12,6 @@ const dedicationRouter = express.Router();
 
 
 dedicationRouter.post('/add-dedication', async (req, res) => {
-console.log(req.body);
   (async () => {
     try {
       const newDedication = new Dedication({...req.body});

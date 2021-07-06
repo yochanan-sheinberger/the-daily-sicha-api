@@ -17,7 +17,9 @@ const dedication = mongoose.Schema({
     parent: String,
     donor: String,
   }],
-});
+},
+{ timestamps: true },
+);
 
 const Dedication = mongoose.model('Dedication', dedication);
 

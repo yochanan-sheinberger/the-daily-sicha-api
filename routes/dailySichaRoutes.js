@@ -29,7 +29,6 @@ dailySichaRouter.post('/add-sichos-files', isAuthenticated, upload.any(), async 
 });
 
 dailySichaRouter.post('/add-sichos-data', isAuthenticated, async (req, res) => {
-  // console.log(req.body);
   const bulkData = req.body.docs.map(sicha => (
     {
       updateOne: {
@@ -44,7 +43,6 @@ dailySichaRouter.post('/add-sichos-data', isAuthenticated, async (req, res) => {
 })
 
 dailySichaRouter.post('/add-sichos-dates', isAuthenticated, async (req, res) => {
-  // console.log(req.body);
   const bulkData = req.body.map(day => (
     {
       updateOne: {
@@ -63,8 +61,6 @@ dailySichaRouter.get('/get-Daily-sicha', async (req, res) => {
   if (!day) {
     let date = moment(req.query.date, 'DD-MM-YYYY').subtract(1, 'days').format('DD-MM-YYYY');
     day = await DailySicha.findOne({ date: date });
-  console.log(date);
-
     if (!day) {
       let operator = 'add';
       if (isSecondHoliday(moment(req.query.date, 'DD-MM-YYYY'))) {
@@ -76,10 +72,9 @@ dailySichaRouter.get('/get-Daily-sicha', async (req, res) => {
       }
     }
   }
-  console.log(day);
-  const sicha = await Sichos.findOne({ id: day.id}, 'abstract content contentHeb recUrl');
-  console.log(sicha);
-  res.json({sicha, day});
+  const sicha = await Sichos.findOne({ id: day?.id }, 'abstract content contentHeb recUrl');
+  res.json({ sicha, day });
+
 })
 
 dailySichaRouter.post('/search-sicha', async (req, res) => {
