@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
-
+const path = require('path');
 const app = express();
 const port = process.env.PORT || 8080;
 require('./config/passport')(app);
