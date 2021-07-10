@@ -16,9 +16,11 @@ app.use(cors())
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
-app.get('/', (req, res) => {
-  res.send('../build/index.html');
-})
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 app.use('/public', express.static('public'));
 app.use('/daily-sicha', dailySichaRouter);
 app.use('/topic', topicRouter);

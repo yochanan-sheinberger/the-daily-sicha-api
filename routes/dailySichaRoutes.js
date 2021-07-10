@@ -72,7 +72,10 @@ dailySichaRouter.get('/get-Daily-sicha', async (req, res) => {
       }
     }
   }
-  const sicha = await Sichos.findOne({ id: day?.id }, 'abstract content contentHeb recUrl');
+  let sicha = null;
+  if (day) {
+    const sicha = await Sichos.findOne({ id: day.id }, 'abstract content contentHeb recUrl');
+  }
   res.json({ sicha, day });
 
 })
