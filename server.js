@@ -24,8 +24,17 @@ app.use('/auth', authRouter);
 app.use('/dedication', dedicationRouter);
 
 
+// const start = async () => {
+//   mongoose.connect(`mongodb+srv://yochanan:${encodeURIComponent('?8MMECsX2up!')}@sichos.qerhb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+//     { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true });
+
+//   app.listen(port, () => {
+//     console.log(`server is listening on port ${port}`);
+//   })
+// }
+
 const start = async () => {
-  mongoose.connect(`mongodb+srv://yochanan:${encodeURIComponent('?8MMECsX2up!')}@sichos.qerhb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+  mongoose.connect('mongodb://localhost:27017/dailysicha?retryWrites=true&w=majority',
     { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true });
 
   app.listen(port, () => {
