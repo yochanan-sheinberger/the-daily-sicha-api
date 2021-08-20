@@ -4,7 +4,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const app = express();
-const port = process.env.PORT || 8080;
+const port = 8080;
 require('./config/passport')(app);
 
 const dailySichaRouter = require('./routes/dailySichaRoutes');
@@ -23,6 +23,10 @@ app.use('/topic', topicRouter);
 app.use('/auth', authRouter);
 app.use('/dedication', dedicationRouter);
 
+app.get('/', (req, res) => {
+  console.log(req.headers);
+  res.end(req.headers.authorization)
+})
 
 // const start = async () => {
 //   mongoose.connect(`mongodb+srv://yochanan:${encodeURIComponent('?8MMECsX2up!')}@sichos.qerhb.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,

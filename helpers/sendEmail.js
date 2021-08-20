@@ -1,13 +1,13 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  name: "mail.thedailysicha.com",
-  host: "mail.thedailysicha.com",
-  port: 465,
-  secure: true, // upgrade later with STARTTLS
+  name: "thedailysicha.com",
+  host: "thedailysicha.com",
+  port: 80,
+  secure: false, // upgrade later with STARTTLS
   auth: {
-    user: "theds@thedailysicha.com",
-    pass: "ZRcxd}Yq2qM4"
+    user: "yoch@thedailysicha.com",
+    pass: "qwert"
   },
   tls: {
     // do not fail on invalid certs

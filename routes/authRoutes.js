@@ -5,22 +5,16 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 const isAuthenticated = require('../helpers/jwtAuth');
+const secret = '09f26e402586e2faa8da4c98a35f1b20d6b033c6097befa8be3486a829587fe2f90a832bd4ff9d42710a4da095a2ce285b009f0c3730cd9b8e1af3eb84df6611';
 
 const Admin = require('../schemas/Admin');
 
 const authRouter = express.Router();
-const RSA_PRIVATE_KEY = fs.readFileSync(path.resolve(__dirname, '../jwtRS256.key'), () => { });
-// const RSA_PRIVATE_KEY = fs.readFileSync(`${process.env.PWD}../../jwtRS256.key`, () => { });
-async function generateJWT(email) {
+
+async function generateAccessToken(email) {
   const user = await Admin.findOne({ email });
 
-  const jwtBearerToken = await jwt.sign({}, RSA_PRIVATE_KEY, {
-    algorithm: 'RS256',
-    expiresIn: '30 days',
-    subject: user.id,
-  });
-
-  return jwtBearerToken;
+  return jwt.sign({ id: user._id }, secret, { expiresIn: '30d' });
 }
 
 authRouter.post('/add-admin', isAuthenticated, async (req, res) => {
@@ -50,7 +44,7 @@ authRouter.post('/authenticate', async (req, res, next) => {
 
     if (!admin) return res.status(401).json('name or password not valid');
 
-    const jwtBearerToken = await generateJWT(req.body.email);
+    const jwtBearerToken = await generateAccessToken(req.body.email);
     return res.status(200).json({
       idToken: jwtBearerToken,
       expiresIn: 30,

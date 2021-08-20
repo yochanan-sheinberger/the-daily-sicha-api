@@ -2,14 +2,17 @@ const mongoose = require('mongoose');
 
 const topic = mongoose.Schema({
   topic: String,
-  sichos: [{
-    title: String,
-    abstract: String,
-    content: String,
-    contentHeb: String,
-    recUrl: String,
-    dedication: String,
-  }],
+  id: String,
+  title: String,
+  abstract: String,
+  content: String,
+  contentMobile: String,
+  contentText: String,
+  contentHeb: String,
+  contentHebMobile: String,
+  contentEng: String,
+  contentEngMobile: String,
+  recUrl: String,
 });
 
 const Topic = mongoose.model('Topic', topic);

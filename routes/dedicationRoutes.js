@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
-const isAuthenticated = require('../helpers/jwtAuth');
+const checkIfAuthenticated = require('../helpers/jwtAuth');
 const sendEmail = require('../helpers/sendEmail');
 const Dedication = require('../schemas/Dedication');
 
@@ -29,9 +29,19 @@ dedicationRouter.post('/add-dedication', async (req, res) => {
   })();
 });
 
-dedicationRouter.get('/get-dedications', isAuthenticated, async (req, res, next) => {
+dedicationRouter.get('/get-dedications', checkIfAuthenticated, async (req, res, next) => {
   const dedications = await Dedication.find({});
   res.json(dedications);
+});
+
+dedicationRouter.get('/send', async (req, res, next) => {
+  sendEmail({
+    subject: "Test",
+    text: 'JSON.stringify(req.body)',
+    to: "yochkesh@gmail.com",
+    from: "contact@thedailysicha.com",
+  });
+  res.json('sent');
 });
 
 module.exports = dedicationRouter;
